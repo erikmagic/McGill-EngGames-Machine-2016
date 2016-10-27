@@ -1,7 +1,7 @@
 /*
  * Erik-Olivier Riendeau, McGill Jeux du Genie, 2016
  * 
- * Communication system part 2 THIS IS THE SENDER
+ * Communication system part 1 THIS IS THE SENDER
  * 
  * This code handles the arduino connected to the laptop. The code transfers
  * the data coming from the gamepad controller ( Logitech f310) to another Arduino 
