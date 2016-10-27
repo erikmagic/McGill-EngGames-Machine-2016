@@ -9,7 +9,7 @@
 // Written by: B. Huang, Sparkfun Electronics -- 
 // rev. September 12, 2014
 //
-// Modified by Erik-Olivier Riendeau, Mcgill EngGames, 2016
+// Modified by Erik-Olivier Riendeau, Mcgill EngGames, 2016 .
 //
 
 import processing.serial.*;
