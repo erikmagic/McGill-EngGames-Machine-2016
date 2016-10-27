@@ -1,5 +1,5 @@
 /*
- * Erik-Olivier Riendeau, McGill Jeux du Genie, 2016
+ * Erik-Olivier Riendeau, McGill Jeux du Genie, 2016 .
  * 
  * Communication system part 1 THIS IS THE SENDER
  * 
