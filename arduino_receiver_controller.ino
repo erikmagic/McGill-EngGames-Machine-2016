@@ -172,82 +172,64 @@ void loop() {
     {
     	// ------------------ driving system  ----------------- //
 
-    	// only the left side of the gamepad is considered atm for the driving system
-    	if ( ( myData.leftX < -3 && myData.leftX > 3 ) || ( myData.leftY < -3 && myData.leftY > 3)){
+	      // -output : the final output that will be delivered to the motor 
+      int outputRight = 0;
+      int outputLeft  = 0;
 
-	    	// the y axis on the joystick represents the speed
-	    	if (myData.leftY < 0){ // third or fourth quadrants
-	    		myData.leftY *= -1; // the speed itself is always positive, what changes is the direction
-	    		direction = 0;
-	    	} else { // first or second quadrants
-	    		direction = 1;
-	    	}
+      // -threshold : the minimum value to get the motors to turn.
+      int const threshold = 50;
 
-	    	// make sure the speed is between 0 and 255
-	    	if (myData.leftY < 0){
-	    		myData.leftY = 0;
-	    	} else if (myData.leftY > 255){
-	    		myData.leftY = 255;
-	    	}
-	    	// saves speeds
-	    	speed_right = myData.leftY;
-	    	speed_left = myData.leftY;
+      // -max : the maximum value of the analog range
+      int const max = 255;
 
-	    	// determine whether the robot is moving forwards or backwards
-	    	if ( direction == 1){ // first or second quadrants
-	    		digitalWrite(MOTOR_DIR_R, HIGH); 
-	    		digitalWrite(MOTOR_DIR_L, HIGH); // both motors go forward ( HIGH IS FORWARDS )
-	    	} else if ( direction == 0){ // third or fourth quadrants
-	    		digitalWrite(MOTOR_DIR_R, LOW);
-	    		digitalWrite(MOTOR_DIR_L, LOW); // both motors go backwards ( LOW IS BACKWARDS) 
-	    	}
+      // -joystickX : the x component of the joystick, between -255 and 255, both included.
+      //              The joystick used is the LEFT joystick
+      int joystickX = myData.leftX;
 
-	    	// difference between the speeds of the two motors
-	    	if ( myData.leftX < 0){ // second or third quadrants
-	    		myData.leftX *= -1;
-	    		if ( myData.leftX > 127){
-	    			speed_right -= (myData.leftX-127)*2; // right motor starts decreasing at 127
-	    		}
-	    		speed_left -= myData.leftX*2; // left motor stops at 127
-	    		if (speed_left < 0{ // make sure the speed is not negative
-	    			speed_left = 0;
-	    		})
-	    		
-	    	} else { // the first and fourth quadrants
-	   			if ( myData.leftX > 127 ){
-	   				speed_left -= (myData.leftX-127)*2 // left motor starts decreasing at 127
-	   			}
-	   			speed_right -= (myData.leftX*2); // right motor stops at 127
-	   			if (speed_right < 0){ // make sure the speed is not negative
-	   				speed_right = 0;
-	   			}	
-	    	}
-	    	// make sure the final speed is between 0 and 255
-	    	if ( speed_right > 255 ) speed_right = 255;
-	    	if ( speed_right < 0) speed_right = 0;
-	    	if ( speed_left > 255) speed_left = 255;
-	    	if ( speed_left < 0) speed_left = 0;
-	    	// advances the robot according to the correct speed
-	    	analogWrite(MOTOR_SPD_R, speed_right);
-	    	analogWrite(MOTOR_SPD_L, speed_left);
-	    }
+      // -joystickY : the y component of the joystick, between -255 and 255, both included.
+      //              The joystick used is the LEFT joystick.
+      int joystickY = myData.leftY;
 
-    	// when you click on lt or rt , the robot rotates 45 degrees in the correct direction
-	    // lt
-	    if ( myData.button[6] ){ // TODO DETERMINE CORRECT BUTTON
-	    	// i need the tachometer
-	    }
-	    // rt
-	    if ( myData.button[7]){ // TODO DETERMINE CORRECT BUTON
-	    	// i need the tachometer
-	    }
+      // -direction : the direction the robot is going, either forwards (1) or backwards (0). 
+      //              Determined by the positive or negative values on joystickY
+      int direction = 1;
 
+      // -status : determines whether the input from the joystick will be considered
+      //           , this is because at rest the joystick may yield some small values
+      //           close to 0 but not exactly 0. Default status is 1, but if the input is
+      //           detected to be very small, the status will be 0.
+      int status = 1;
 
-    	// ------------------ cannon -------------------------- //
+      if (joystickY > -10 && joystickY < 10) status = 0;
+
+      if (status){
+
+        // Y input - throttle 
+
+        // if the joystickY is negative, change the direction and update the joystickY to positive
+        if (joystickY < 0){
+          direction = 0;
+          joystickY *= -1;
+        }
+
+        // if the joystickY value is below the threshold, apply a threshold correction
+        if (joystickY < threshold) joystickY = threshold;
+
+        // drive 
+        outputRight = constrain(joystickY + joystickX, 0, 255);
+        outputLeft = constrain(joystickY - joystickX, 0, 255);
+      }
+      // ------------------ fixed rotation ------------------ //
+
+      // I am unsure whether the right joystick or the hat was not working properly
+      // I will use the right joystick but if it is broken, change to the hat
+	    
+	    
+      // ------------------ cannon -------------------------- //
 
 
 
 
-    	// ------------------- pole climbers ------------------- //
+    // ------------------- pole climbers ------------------- //
     }
 }
